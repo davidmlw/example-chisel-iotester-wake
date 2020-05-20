@@ -24,13 +24,18 @@ jobs:
     # Steps represent a sequence of tasks that will be executed as part of the job
     steps:
 
+    - name: Get branch name
+      id: branch
+      run: |
+        echo ::set-output name=branch_name::${GITHUB_REF##*/}
+
     - name: Compose workspace
       uses: sifive/wit/actions/wit@master
       with:
         command: init
         arguments: |
           workspace
-          -a git@github.com:davidmlw/example-chisel-iotester-wake.git::jar
+          -a git@github.com:davidmlw/example-chisel-iotester-wake.git::${{ steps.branch.outputs.branch_name }}
         force_github_https: true
 
     - name: Build workspace
